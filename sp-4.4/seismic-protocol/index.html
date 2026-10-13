@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seismic Protocol</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/ui.css">
+
+  <!-- Three.js copiado localmente (no depende de internet) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.js",
+      "three/addons/": "./vendor/three/addons/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="viewport">
+    <canvas id="gl"></canvas>
+
+    <!-- Capa de interfaz: medidas en px sobre una base de 1920×1080 -->
+    <div id="ui">
+      <!-- Capa del juego (en los tutoriales se encoge dentro de una ventana junto con el canvas) -->
+      <div id="game-layer">
+        <div id="labels"></div>
+        <div id="prompt" class="prompt" hidden></div>
+        <div id="clock" class="clock" hidden>
+          <span class="clock-pulse"></span>
+          <span id="clock-text">1:30</span>
+        </div>
+        <div id="tooltip" class="tooltip" hidden></div>
+
+        <div id="dialog" class="dialog" hidden>
+          <span id="dialog-speaker" class="dialog-speaker" hidden></span>
+          <p id="dialog-text"></p>
+          <span class="dialog-next">▼</span>
+        </div>
+
+        <div id="minigame" hidden></div>
+      </div>
+      <div id="fade" class="fade on"></div>
+
+      <div id="card" class="screen card" hidden>
+        <div id="card-clock" class="card-clock">
+          <span class="clock-pulse"></span>
+          <span id="card-clock-text"></span>
+        </div>
+        <h1 id="card-title"></h1>
+        <p id="card-subtitle"></p>
+      </div>
+
+      <div id="menu" class="screen menu" hidden>
+        <div class="logo">
+          <span class="logo-top">seismic</span>
+          <span class="logo-main">PROTOCOL</span>
+        </div>
+        <button id="btn-start" class="btn-pill">Iniciar Partida</button>
+      </div>
+
+      <div id="death" class="screen death" hidden>
+        <div class="skull" aria-label="Has muerto">
+          <!-- Calavera provisional (wireframe). Para usar una imagen: --image-skull en css/theme.css -->
+          <svg class="skull-svg" viewBox="0 0 200 220" aria-hidden="true">
+            <path d="M30 20 L170 20 L185 60 L185 130 L160 150 L160 185 L140 165 L120 200 L100 170 L80 200 L60 165 L40 185 L40 150 L15 130 L15 60 Z" fill="#fff"/>
+            <g stroke="#000" stroke-width="16" stroke-linecap="square">
+              <path d="M45 70 L80 105 M80 70 L45 105"/>
+              <path d="M120 70 L155 105 M155 70 L120 105"/>
+            </g>
+            <path d="M100 115 L114 142 L86 142 Z" fill="#000"/>
+          </svg>
+        </div>
+      </div>
+
+      <div id="ending" class="screen ending" hidden>
+        <div class="ending-body">
+          <div id="ending-image" class="ending-image placeholder">
+            <!-- Círculo roto provisional (wireframe). Se reemplaza con "image" en data/endings.js -->
+            <svg class="ending-ph" viewBox="0 0 200 200" aria-hidden="true">
+              <path d="M100 6 L112 7 L108 20 L122 9 A94 94 0 0 1 188 70 L176 76 L190 84 A94 94 0 0 1 150 180 L146 166 L136 188 A94 94 0 0 1 30 162 L44 156 L24 150 A94 94 0 0 1 12 70 L26 74 L14 58 A94 94 0 0 1 100 6 Z" fill="#fff"/>
+              <path d="M38 38 L162 162 M162 38 L38 162" stroke="#000" stroke-width="3"/>
+            </svg>
+          </div>
+          <div class="ending-info">
+            <h1 id="ending-title"></h1>
+            <p id="ending-cause"></p>
+            <ul id="ending-feedback"></ul>
+          </div>
+        </div>
+        <div class="ending-buttons">
+          <button id="btn-section" class="btn-pill">Reintentar</button>
+          <button id="btn-menu" class="btn-pill">Volver al inicio</button>
+        </div>
+      </div>
+
+      <!-- Tutoriales "¡ATENTO!": demostración automática (js/core/Tutorial.js) -->
+      <div id="tutorial" class="tutorial" hidden>
+        <div class="tut-blocker"></div>
+        <div id="tut-header" class="tut-header" hidden>
+          <h2 id="tut-header-title">¡ATENTO!</h2>
+          <p id="tut-header-sub"></p>
+        </div>
+        <div id="tut-frame" class="tut-frame" hidden></div>
+        <div id="tut-badge" class="tut-badge" hidden>DEMOSTRACIÓN</div>
+        <div id="tut-caption" class="tut-caption" hidden></div>
+        <div id="tut-flash" class="tut-flash" hidden></div>
+        <div id="tut-hand" class="tut-hand" hidden>
+          <span class="tut-ripple"></span>
+          <!-- Puntero provisional. Para usar una imagen: --image-tut-hand en css/theme.css -->
+          <svg class="tut-hand-svg" viewBox="0 0 64 80" aria-hidden="true">
+            <path d="M4 4 L4 62 L18 49 L28 72 L39 67 L29 45 L48 45 Z" fill="#fff" stroke="#000" stroke-width="5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <button id="tut-skip" class="tut-skip btn-pill">Saltar</button>
+      </div>
+      <div id="loading" class="screen loading">
+        <p>Cargando…</p>
+        <div class="loading-track"><div id="loading-bar"></div></div>
+      </div>
+
+      <pre id="debug" hidden></pre>
+    </div>
+  </div>
+
+  <script>
+    // Aviso si se abre con doble clic: los navegadores bloquean módulos y modelos desde file://
+    if (location.protocol === 'file:') {
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.insertAdjacentHTML('beforeend',
+          '<pre class="fatal">Esta experiencia no funciona abriendo el archivo con doble clic.\n\n' +
+          'Ábrela con la extensión Live Server de VS Code:\n' +
+          'clic derecho sobre index.html → "Open with Live Server".\n\nMás detalles en LEEME.md</pre>');
+      });
+    }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+/* ============================================================
+   TEMA VISUAL — cambia aquí tipografías, colores e imágenes de la interfaz.
+   La distribución (posiciones y tamaños) está en ui.css.
+   ============================================================ */
+
+/* ---------- TIPOGRAFÍAS ----------
+   Para usar fuentes propias, copia los archivos en assets/fonts/ y descomenta: */
+/*
+@font-face {
+  font-family: 'Display';
+  src: url('../assets/fonts/MiFuenteTitulos.woff2') format('woff2');
+  font-display: block;
+}
+@font-face {
+  font-family: 'Body';
+  src: url('../assets/fonts/MiFuenteTexto.woff2') format('woff2');
+  font-display: block;
+}
+*/
+
+:root {
+  /* Fuente de títulos (condensada, como en el wireframe) y de textos */
+  --font-display: 'Display', Impact, 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
+  --font-body: 'Body', Georgia, 'Times New Roman', serif;
+  --font-ui: 'Body', 'Segoe UI', Arial, sans-serif;
+
+  /* Colores */
+  --color-bg: #000000;
+  --color-fg: #ffffff;
+  --color-ink: #000000;
+  --color-accent: #ff2d6b;       /* rosado del wireframe */
+  --color-accent-2: #1fb6ff;     /* azul del wireframe */
+  --color-ok: #3ddc84;
+  --color-bad: #ff4d4d;
+  --color-urgent: #ff3030;
+  --color-hover: #ffe066;
+  --color-attention: #ffd60a;    /* "¡ATENTO!" y "¡Tu turno!" de los tutoriales */
+  --color-panel: rgba(0, 0, 0, 0.82);
+  --color-pulse: #ffffff;        /* anillo de pulso del reloj */
+  --color-special-bg: #ffffff;   /* final bueno: fondo */
+  --color-special-fg: #000000;   /* final bueno: texto */
+
+  /* Imágenes opcionales de la interfaz (url('../assets/textures/...')) */
+  --image-menu-bg: none;
+  --image-skull: none;           /* imagen de la calavera; al ponerla, pon --skull-svg-display: none */
+  --skull-svg-display: block;    /* calavera provisional dibujada (SVG) */
+  --image-tut-hand: none;        /* puntero de los tutoriales (punta arriba a la izquierda); al ponerla, pon --tut-hand-svg-display: none */
+  --tut-hand-svg-display: block;
+  --image-dialog-bg: none;
+  --image-special-bg: none;              /* fondo del final bueno */
+  --image-special-illustration: none;    /* ilustración del final bueno (o usa "image" en data/endings.js) */
+
+  /* Tamaños de texto (en px sobre 1920×1080) */
+  --size-logo: 220px;
+  --size-card-title: 160px;
+  --size-card-subtitle: 34px;
+  --size-dialog: 30px;
+  --size-prompt: 64px;
+  --size-label: 22px;
+  --size-item-label: 20px;
+  --size-fb-icon: 30px;        /* círculos ✓/✗ de las pantallas finales */     /* nombre de los objetos en los minijuegos */
+  --size-clock: 64px;
+  --size-ending-title: 110px;
+  --size-ending-text: 26px;
+}

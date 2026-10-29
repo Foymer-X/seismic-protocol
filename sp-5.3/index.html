@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seismic Protocol</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/ui.css">
+
+  <!-- Three.js copiado localmente (no depende de internet) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.js",
+      "three/addons/": "./vendor/three/addons/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="viewport">
+    <canvas id="gl"></canvas>
+
+    <!-- Capa de interfaz: medidas en px sobre una base de 1920×1080 -->
+    <div id="ui">
+      <!-- Capa del juego (en los tutoriales se encoge dentro de una ventana junto con el canvas) -->
+      <div id="game-layer">
+        <!-- Efectos a pantalla completa (lluvia de adelante, escombros que caen): js/core/Effects.js -->
+        <div id="fx-layers"></div>
+        <div id="labels"></div>
+        <div id="prompt" class="prompt" hidden></div>
+        <div id="clock" class="clock" hidden>
+          <span class="clock-pulse"></span>
+          <span id="clock-text">1:30</span>
+        </div>
+        <div id="tooltip" class="tooltip" hidden></div>
+
+        <div id="dialog" class="dialog" hidden>
+          <span id="dialog-speaker" class="dialog-speaker" hidden></span>
+          <p id="dialog-text"></p>
+          <span class="dialog-next">▼</span>
+        </div>
+
+        <div id="minigame" hidden></div>
+      </div>
+      <div id="fade" class="fade on"></div>
+
+      <div id="card" class="screen card" hidden>
+        <div id="card-clock" class="card-clock">
+          <span class="clock-pulse"></span>
+          <span id="card-clock-text"></span>
+        </div>
+        <h1 id="card-title"></h1>
+        <p id="card-subtitle"></p>
+      </div>
+
+      <div id="menu" class="screen menu" hidden>
+        <!-- Contador de finales (aparece después del primer final; dorado con los 7) -->
+        <div id="menu-progress" class="menu-progress" hidden><span class="mp-star">★</span><span id="menu-progress-text" class="mp-count"></span><span id="menu-progress-label" class="mp-label"></span><span id="menu-progress-reset" class="mp-reset"></span></div>
+        <div id="menu-hint" class="menu-hint" hidden></div>
+        <!-- Logo del equipo (assets/ui/logo_seismic_original.svg). Va en línea para usar las fuentes de la página:
+             "seismic" en Baskerville Old Face (o Libre Baskerville si el computador no la tiene). -->
+        <div class="logo">
+          <svg class="logo-svg" role="img" aria-label="Seismic Protocol" viewBox="0 0 1800 635" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:affinity="https://www.affinity.studio/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"><text x="447.614px" y="69.607px" style="font-family:'BaskOldFace', 'Baskerville Old Face', 'Libre Baskerville', serif;font-size:101.825px;fill:#fff;">s<tspan x="585.436px 733.151px 859.637px 997.458px 1180.723px 1307.208px " y="69.607px 69.607px 69.607px 69.607px 69.607px 69.607px ">eismic</tspan></text><g transform="matrix(15.203388,0,0,15.203388,-50131.590017,-3484.621298)"><clipPath id="seismic-logo-clip"><path d="M3297.396,240.37l0.5,-4.65l7.9,0c1.4,0 2.533,0.425 3.4,1.275c0.867,0.85 1.3,1.975 1.3,3.375l0,15.65c0,1.4 -0.525,2.525 -1.575,3.375c-1.05,0.85 -2.275,1.275 -3.675,1.275l-2.35,0l0,10.05l-4.75,0l0,-30.35l-0.75,0Zm8.1,0l-2.6,0l0,15.65l2.6,0c0.167,0 0.25,-0.083 0.25,-0.25l0,-15.15c0,-0.167 -0.083,-0.25 -0.25,-0.25Zm6.75,0l0.5,-4.65l7.9,0c1.4,0 2.533,0.425 3.4,1.275c0.867,0.85 1.3,1.975 1.3,3.375l0,15.65c0,0.733 -0.15,1.392 -0.45,1.975c-0.3,0.583 -0.7,1.075 -1.2,1.475l3.2,11.250l-4.8,0l-2.85,-10.05l-1.5,0l0,10.05l-4.75,0l0,-30.35l-0.75,0Zm8.1,0l-2.6,0l0,15.65l2.6,0c0.167,0 0.25,-0.083 0.25,-0.25l0,-15.15c0,-0.167 -0.083,-0.25 -0.25,-0.25Zm20.05,25.9c0,1.4 -0.433,2.525 -1.3,3.375c-0.867,0.85 -2,1.275 -3.4,1.275l-3.6,0c-1.4,0 -2.533,-0.425 -3.4,-1.275c-0.867,-0.85 -1.3,-1.975 -1.3,-3.375l0,-26.1c0,-1.4 0.433,-2.525 1.3,-3.375c0.867,-0.85 2,-1.275 3.4,-1.275l3.6,0c1.4,0 2.533,0.425 3.4,1.275c0.867,0.85 1.3,1.975 1.3,3.375l0,26.1Zm-8,-26.1c-0.167,0 -0.25,0.083 -0.25,0.25l0,25.6c0,0.167 0.083,0.25 0.25,0.25l3,0c0.167,0 0.25,-0.083 0.25,-0.25l0,-25.6c0,-0.167 -0.083,-0.25 -0.25,-0.25l-3,0Zm9.5,0.2l0,-4.65l13.75,0l0,4.65l-4.5,0l0,30.35l-4.75,0l0,-30.35l-4.5,0Zm28.25,25.9c0,1.4 -0.433,2.525 -1.3,3.375c-0.867,0.85 -2,1.275 -3.4,1.275l-3.6,0c-1.4,0 -2.533,-0.425 -3.4,-1.275c-0.867,-0.85 -1.3,-1.975 -1.3,-3.375l0,-26.1c0,-1.4 0.433,-2.525 1.3,-3.375c0.867,-0.85 2,-1.275 3.4,-1.275l3.6,0c1.4,0 2.533,0.425 3.4,1.275c0.867,0.85 1.3,1.975 1.3,3.375l0,26.1Zm-8,-26.1c-0.167,0 -0.25,0.083 -0.25,0.25l0,25.6c0,0.167 0.083,0.25 0.25,0.25l3,0c0.167,0 0.25,-0.083 0.25,-0.25l0,-25.6c0,-0.167 -0.083,-0.25 -0.25,-0.25l-3,0Zm23.25,15.35l0,10.75c0,1.4 -0.433,2.525 -1.3,3.375c-0.867,0.85 -2,1.275 -3.4,1.275l-3.6,0c-1.4,0 -2.533,-0.425 -3.4,-1.275c-0.867,-0.85 -1.3,-1.975 -1.3,-3.375l0,-26.1c0,-1.4 0.433,-2.525 1.3,-3.375c0.867,-0.85 2,-1.275 3.4,-1.275l3.6,0c1.4,0 2.533,0.425 3.4,1.275c0.867,0.85 1.3,1.975 1.3,3.375l0,11.2l-4.75,-0.5l0,-10.45c0,-0.167 -0.083,-0.25 -0.25,-0.25l-3,0c-0.167,0 -0.25,0.083 -0.25,0.25l0,25.6c0,0.167 0.083,0.25 0.25,0.25l3,0c0.167,0 0.25,-0.083 0.25,-0.25l0,-10.5l4.75,0Zm15.25,10.75c0,1.4 -0.433,2.525 -1.3,3.375c-0.867,0.85 -2,1.275 -3.4,1.275l-3.6,0c-1.4,0 -2.533,-0.425 -3.4,-1.275c-0.867,-0.85 -1.3,-1.975 -1.3,-3.375l0,-26.1c0,-1.4 0.433,-2.525 1.3,-3.375c0.867,-0.85 2,-1.275 3.4,-1.275l3.6,0c1.4,0 2.533,0.425 3.4,1.275c0.867,0.85 1.3,1.975 1.3,3.375l0,26.1Zm-8,-26.1c-0.167,0 -0.25,0.083 -0.25,0.25l0,25.6c0,0.167 0.083,0.25 0.25,0.25l3,0c0.167,0 0.25,-0.083 0.25,-0.25l0,-25.6c0,-0.167 -0.083,-0.25 -0.25,-0.25l-3,0Zm23.1,25.9l-0.4,4.65l-11.95,0l0,-30.35l-0.75,0l0.5,-4.65l5,0l0,30.35l7.6,0Z" clip-rule="nonzero"/></clipPath><g clip-path="url(#seismic-logo-clip)"><rect x="3290" y="230" width="150" height="48" fill="#fff"/><g transform="matrix(-0.002476,-0.015591,0.015591,-0.002476,3376.822859,594.092821)"><path d="M20347.177,1584.641l872.922,19.382l948.677,463.605l438.94,442.593l1196.465,99.116l325.665,339.824l750.446,410.621" style="fill:none;stroke:#000;stroke-width:13.19px;"/></g><g transform="matrix(0.015786,0,0,0.015786,3005.355824,220.580123)"><path d="M19004.16,839.418l523.896,587.613l1692.043,176.992l948.677,463.605l438.94,442.593l1196.465,99.116l325.665,339.824l750.446,410.621" style="fill:none;stroke:#000;stroke-width:13.19px;"/></g><g transform="matrix(0.010663,-0.01164,0.01164,0.010663,3093.328914,486.755071)"><path d="M19004.16,839.418l523.896,587.613l1692.043,176.992l948.677,463.605l438.94,442.593l1196.465,99.116l325.665,339.824l750.446,410.621" style="fill:none;stroke:#000;stroke-width:13.19px;"/></g></g></g></svg>
+
+        </div>
+        <button id="btn-start" class="btn-pill">Iniciar Partida</button>
+        <!-- Identidad UNGRD (Manual de Identidad Visual 2024): versión a una tinta en negativo (blanco sobre negro) -->
+        <div class="menu-brand">
+          <span class="brand-caption">Una experiencia educativa de</span>
+          <img class="brand-logo" src="assets/ungrd/ungrd_h_blanco.webp" alt="UNGRD — Unidad Nacional para la Gestión del Riesgo de Desastres">
+        </div>
+      </div>
+
+      <!-- Introducción (contexto de la experiencia): data/texts.js → intro_pages; escenas en js/ui/IntroScenes.js -->
+      <div id="intro" class="screen intro" hidden>
+        <div id="intro-stage" class="intro-stage"></div>
+        <div class="intro-bottom">
+          <p id="intro-text" class="intro-text"></p>
+          <div class="intro-dots" id="intro-dots"></div>
+        </div>
+        <div class="intro-buttons">
+          <button id="intro-skip" class="btn-pill intro-skip"></button>
+          <button id="intro-next" class="btn-pill intro-next"></button>
+        </div>
+      </div>
+
+      <div id="death" class="screen death" hidden>
+        <div class="skull" aria-label="Has muerto">
+          <!-- Calavera provisional (wireframe). Para usar una imagen: --image-skull en css/theme.css -->
+          <svg class="skull-svg" viewBox="0 0 200 220" aria-hidden="true">
+            <path d="M30 20 L170 20 L185 60 L185 130 L160 150 L160 185 L140 165 L120 200 L100 170 L80 200 L60 165 L40 185 L40 150 L15 130 L15 60 Z" fill="#fff"/>
+            <g stroke="#000" stroke-width="16" stroke-linecap="square">
+              <path d="M45 70 L80 105 M80 70 L45 105"/>
+              <path d="M120 70 L155 105 M155 70 L120 105"/>
+            </g>
+            <path d="M100 115 L114 142 L86 142 Z" fill="#000"/>
+          </svg>
+        </div>
+      </div>
+
+      <div id="ending" class="screen ending" hidden>
+        <div class="ending-body">
+          <div id="ending-image" class="ending-image placeholder">
+            <!-- Círculo roto provisional (wireframe). Se reemplaza con "image" en data/endings.js -->
+            <svg class="ending-ph" viewBox="0 0 200 200" aria-hidden="true">
+              <path d="M100 6 L112 7 L108 20 L122 9 A94 94 0 0 1 188 70 L176 76 L190 84 A94 94 0 0 1 150 180 L146 166 L136 188 A94 94 0 0 1 30 162 L44 156 L24 150 A94 94 0 0 1 12 70 L26 74 L14 58 A94 94 0 0 1 100 6 Z" fill="#fff"/>
+              <path d="M38 38 L162 162 M162 38 L38 162" stroke="#000" stroke-width="3"/>
+            </svg>
+          </div>
+          <div class="ending-info">
+            <h1 id="ending-title"></h1>
+            <p id="ending-cause"></p>
+            <ul id="ending-feedback"></ul>
+          </div>
+        </div>
+        <div class="ending-buttons">
+          <button id="btn-section" class="btn-pill">Reintentar</button>
+          <button id="btn-menu" class="btn-pill">Volver al inicio</button>
+        </div>
+      </div>
+
+      <!-- Cierre UNGRD: "Ahora, prepárate de verdad" (después de un final, al volver al inicio). Textos en data/texts.js → prepare_* -->
+      <div id="prepare" class="screen prepare" hidden>
+        <img class="prepare-logo" src="assets/ungrd/ungrd_h_blanco.webp" alt="UNGRD — Unidad Nacional para la Gestión del Riesgo de Desastres">
+        <h1 id="prepare-title"></h1>
+        <p id="prepare-sub" class="prepare-sub"></p>
+        <ol id="prepare-list" class="prepare-list"></ol>
+        <div class="prepare-line"><span class="prepare-123">123</span><span id="prepare-line-text"></span></div>
+        <button id="prepare-next" class="btn-pill prepare-next"></button>
+        <p id="prepare-credits" class="prepare-credits"></p>
+        <span class="flag-bar flag-bar--bottom" aria-hidden="true"></span>
+      </div>
+
+      <!-- Tutoriales "¡ATENTO!": demostración automática (js/core/Tutorial.js) -->
+      <div id="tutorial" class="tutorial" hidden>
+        <div class="tut-blocker"></div>
+        <div id="tut-header" class="tut-header" hidden>
+          <h2 id="tut-header-title">¡ATENTO!</h2>
+          <p id="tut-header-sub"></p>
+        </div>
+        <div id="tut-frame" class="tut-frame" hidden></div>
+        <div id="tut-badge" class="tut-badge" hidden>DEMOSTRACIÓN</div>
+        <div id="tut-caption" class="tut-caption" hidden></div>
+        <div id="tut-flash" class="tut-flash" hidden></div>
+        <div id="tut-hand" class="tut-hand" hidden>
+          <span class="tut-ripple"></span>
+          <!-- Puntero provisional. Para usar una imagen: --image-tut-hand en css/theme.css -->
+          <svg class="tut-hand-svg" viewBox="0 0 64 80" aria-hidden="true">
+            <path d="M4 4 L4 62 L18 49 L28 72 L39 67 L29 45 L48 45 Z" fill="#fff" stroke="#000" stroke-width="5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <button id="tut-skip" class="tut-skip btn-pill">Saltar</button>
+      </div>
+      <div id="loading" class="screen loading">
+        <img class="brand-logo brand-logo--loading" src="assets/ungrd/ungrd_h_blanco.webp" alt="UNGRD">
+        <p>Cargando…</p>
+        <div class="loading-track"><div id="loading-bar"></div></div>
+      </div>
+
+      <!-- Sonido: activar / silenciar (también con la tecla M). Ver js/core/AudioManager.js -->
+      <button id="btn-sound" class="sound-toggle" aria-label="Silenciar sonido" title="Sonido (M)">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path class="spk" d="M8 18h8l11-9v30l-11-9H8z"/>
+          <g class="waves"><path d="M32 17c3 2 4.5 4.5 4.5 7s-1.5 5-4.5 7"/><path d="M36.5 12c5 3.5 7.5 7.5 7.5 12s-2.5 8.5-7.5 12"/></g>
+          <g class="cross"><path d="M33 18l12 12M45 18L33 30"/></g>
+        </svg>
+      </button>
+
+      <pre id="debug" hidden></pre>
+    </div>
+  </div>
+
+  <script>
+    // Aviso si se abre con doble clic: los navegadores bloquean módulos y modelos desde file://
+    if (location.protocol === 'file:') {
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.insertAdjacentHTML('beforeend',
+          '<pre class="fatal">Esta experiencia no funciona abriendo el archivo con doble clic.\n\n' +
+          'Ábrela con la extensión Live Server de VS Code:\n' +
+          'clic derecho sobre index.html → "Open with Live Server".\n\nMás detalles en LEEME.md</pre>');
+      });
+    }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

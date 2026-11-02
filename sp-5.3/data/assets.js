@@ -186,8 +186,6 @@ export const ASSETS = {
   // gente de fondo (dibujos con menos saturación para que se mezclen con el ambiente lluvioso)
   neighbor1:   vecinoSprite('vecino_nino', 1.05, 0.6133, 'Niño', 'right'),
   neighbor2:   vecinoSprite('vecino_bebe', 0.55, 0.865, 'Bebé', 'left'),
-  neighbor3:   { type: 'sprite', src: null, height: 1.75, color: '#c9c9c9', label: 'Vecino' },
-  neighbor4:   { type: 'sprite', src: null, height: 1.6, color: '#c9c9c9', label: 'Vecina' },
 
   // ---------- OBJETOS DE LA MALETA (sprites 2D que se arrastran) ----------
   // El nombre de cada uno sale de data/items.js. Clave: item_<id del objeto>
@@ -282,7 +280,7 @@ export const ASSETS = {
   // ---------- EJEMPLOS (assets/ejemplos/) — referencia de cada formato ----------
   // debugOnly: solo se cargan con CONFIG.debug = true
   demo_model:  { debugOnly: true, type: 'model', src: 'assets/ejemplos/modelo_con_luz.glb' },
-  demo_env:    { debugOnly: true, type: 'environment', src: 'assets/ejemplos/cielo.hdr' },
+  demo_env:    { debugOnly: true, type: 'environment', src: 'assets/hdri/calle.hdr' },   // (usa el cielo de la calle)
   demo_sheet:  { debugOnly: true, type: 'sprite', src: 'assets/ejemplos/hoja_sprites.png', height: 1.5,
                  sheet: { cols: 4, rows: 2, anims: { idle: { row: 0, frames: 4, fps: 4 }, walk: { row: 1, frames: 4, fps: 8 } } } },
   demo_frames: { debugOnly: true, type: 'sprite', height: 1.5,

@@ -17,7 +17,7 @@ export const ENDINGS = {
     cause: 'El armario es un espacio cerrado y frágil: puede caerte encima y nadie sabría dónde buscarte. Durante el sismo, agáchate, cúbrete y sujétate lejos de ventanas y objetos que puedan caer; cuando pase el movimiento, evacúa por la ruta segura.',
   },
   ascensor: {
-    title: 'final ascensor', death: true, image: null,
+    title: 'final ascensor', death: true, image: 'ascensor', imageFit: 'contain',
     cause: 'Nunca uses el ascensor durante ni después de un sismo: puede quedarse sin energía, atascarse o desplomarse. Evacúa siempre por las escaleras.',
   },
   escombros: {
@@ -25,11 +25,11 @@ export const ENDINGS = {
     cause: 'No alcanzaste a salir y quedaste atrapado bajo los escombros sin una maleta de emergencia completa. Sin agua, abrigo, silbato ni linterna, no pudiste resistir ni pedir ayuda hasta el rescate.',
   },
   rescatado: {
-    title: 'final rescatado', death: false, image: null,
+    title: 'final rescatado', death: false, image: 'rescatado', imageFit: 'contain',
     cause: 'No alcanzaste a salir, pero tu maleta de emergencia completa te salvó: con agua y abrigo resististe, con la linterna y el silbato los rescatistas pudieron encontrarte.',
   },
   replica: {
-    title: 'final réplica', death: true, image: null,
+    title: 'final réplica', death: true, image: 'replica', imageFit: 'contain',
     cause: 'Volviste a entrar solo a un edificio dañado. Después de un sismo vienen réplicas que pueden derrumbar lo que quedó en pie: nunca regreses a una estructura afectada; pide ayuda a los organismos de rescate.',
   },
   neutral: {

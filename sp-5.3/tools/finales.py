@@ -14,10 +14,16 @@ ALTO = 1000          # alto de cada ilustración en la hoja (px)
 #   recorte = None (completa) o (cx, cy, lado) en fracciones: un cuadrado centrado en (cx, cy) de lado "lado"
 #   sticker = True → borde blanco alrededor del dibujo, como una calcomanía (finales normales, flotando sobre negro)
 ARTE = {
-    'escondite': ('final_escondite.png', None, True),            # armario (escombros con madera verde)
-    'escombros': ('final_escombros.png', None, True),            # bajo los escombros
-    'neutral':   ('final_neutral.png', None, True),
-    'bueno':     ('final_bueno.png', None, False),                 # final bueno: grande, abajo a la derecha (fondo blanco)
+    # (estas 4 se recuperaron de la hoja anterior y ya traen el borde blanco → sticker False;
+    #  si vuelven a usar los PNG originales sin borde, pongan True)
+    'escondite': ('final_escondite.png', None, False),           # armario (escombros con madera verde)
+    'escombros': ('final_escombros.png', None, False),           # bajo los escombros
+    'neutral':   ('final_neutral.png', None, False),
+    'bueno':     ('final_bueno.png', None, False),                # final bueno: grande, abajo a la derecha (fondo blanco)
+    # nuevas (provisionales finales hechas con el arte del juego: captura de la escena o dibujos del equipo)
+    'ascensor':  ('final_ascensor.png', None, True),             # la cabina con la familia adentro
+    'replica':   ('final_replica.png', None, True),              # el piso de abajo, ya derrumbado
+    'rescatado': ('final_rescatado.png', None, True),            # Carlos y el bombero que lo rescató
 }
 BORDE = 16           # grosor del borde blanco del sticker (px, en la hoja)
 

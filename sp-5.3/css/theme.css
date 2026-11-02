@@ -52,7 +52,7 @@
   /* Imágenes opcionales de la interfaz (url('../assets/textures/...')) */
   --image-menu-bg: none;
   --image-skull: none;           /* imagen de la calavera; al ponerla, pon --skull-svg-display: none */
-  --skull-svg-display: block;    /* calavera provisional dibujada (SVG) */
+  --skull-svg-display: block;    /* calavera dibujada (SVG en index.html) */
   --image-tut-hand: none;        /* puntero de los tutoriales (punta arriba a la izquierda); al ponerla, pon --tut-hand-svg-display: none */
   --tut-hand-svg-display: block;
   --image-dialog-bg: none;

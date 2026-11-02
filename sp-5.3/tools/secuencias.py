@@ -48,7 +48,7 @@ for name, (folder, start, n, xf, size, fps, boost, veil, color) in EFECTOS.items
     out = f'{PROJ}/assets/fx/{name}.webp'
     os.makedirs(os.path.dirname(out), exist_ok=True)
     # la lluvia es casi solo alfa: comprimir el alfa (alpha_quality) baja la hoja de ~3 MB a ~1.5 MB sin que se note
-    aq = 70 if name == 'lluvia' else 100
+    aq = 55 if name == 'lluvia' else 100
     Image.fromarray(np.clip(sheet, 0, 255).astype(np.uint8)).save(out, 'WEBP', quality=80, alpha_quality=aq, method=4)
     meta[name] = {'sheet': f'assets/fx/{name}.webp', 'cols': cols, 'rows': rows, 'count': n, 'fps': fps, 'w': fw, 'h': fh}
     print(f'{name}: {n} cuadros {fw}x{fh}, hoja {cols * fw}x{rows * fh}, {os.path.getsize(out) / 1024:.0f} KB')

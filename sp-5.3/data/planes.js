@@ -293,11 +293,10 @@ export const PLANES = {
       startB:    [2.5, -0.15, 3.7],
       rubble:    [7.2, -0.15, 3.0],     // hacia la abertura del edificio del centro
       help:      [11.5, -0.15, 3.9],    // sale por la derecha, hacia el camión de bomberos
-      n1: [-0.6, -0.15, 4.5], n2: [0.3, -0.15, 4.55], n3: [8.6, -0.15, 3.9], n4: [9.4, -0.15, 4.2],   // n1-n2: niño y bebé, delante del escombro oscuro
+      n1: [-0.6, -0.15, 4.5], n2: [0.3, -0.15, 4.55],   // niño y bebé, delante del escombro oscuro
     },
     actors: {
-      neighbor1: { at: 'n1' }, neighbor2: { at: 'n2', face: 'left' },
-      neighbor3: { at: 'n3' }, neighbor4: { at: 'n4', face: 'left' },
+      neighbor1: { at: 'n1' }, neighbor2: { at: 'n2', face: 'left' },   // gente de fondo: niño y bebé
       hero: { at: 'start' },
       mom:  { at: 'startB', visible: false },
       dog:  { at: 'startB', visible: false },
@@ -332,12 +331,16 @@ export const PLANES = {
       inj2:    [15.8, -0.15, 3.3],
       inj3:    [17.4, -0.15, 3.3],
       inj4:    [19.0, -0.15, 3.3],
+      bg1:     [12.9, -0.15, 2.85],      // gente de fondo (niño y bebé), atrás, junto al edificio
+      bg2:     [13.6, -0.15, 2.9],
     },
     actors: {
       hero:        { at: 'enter' },
       mom:         { at: 'enterB', visible: false },
       dog:         { at: 'enterB', visible: false },
       firefighter: { at: 'ff' },
+      neighbor1:   { at: 'bg1' },
+      neighbor2:   { at: 'bg2', face: 'left' },
       injured1:    { at: 'inj1' },
       injured2:    { at: 'inj2' },
       injured3:    { at: 'inj3' },

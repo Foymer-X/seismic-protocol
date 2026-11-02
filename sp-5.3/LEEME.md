@@ -231,8 +231,8 @@ no hace falta editarlo a mano.
 
 ### Heridos, maleta y escape
 
-- Gente de fondo en la calle: niño y bebé (`vecino_nino`, `vecino_bebe` en assets/sprites/heridos/), con menos
-  saturación para que se mezclen con el ambiente lluvioso.
+- Gente de fondo en el después: niño y bebé (`vecino_nino`, `vecino_bebe` en assets/sprites/heridos/), con menos
+  saturación para que se mezclen con el ambiente lluvioso. Aparecen en la calle y en la escena del bombero.
 - Heridos: `assets/sprites/heridos/<id>_antes.webp` y `_despues.webp`. Al confirmar el minijuego, los bien
   atendidos cambian a su dibujo de "después" y sale "¡Lo hiciste bien!" / "No lo hiciste bien" con cuántos atendiste bien.
 - Maleta: si al confirmar sobran objetos o faltan útiles, sale una advertencia general (textos `pack_warn_*`).
@@ -298,11 +298,13 @@ El sonido de la lluvia se conecta en `sfx_rain`, dentro de `data/assets.js`.
   - Bajo escombros: completa dentro del círculo (`imageFit: 'contain'`). Neutral: recortada y centrada en Carlos.
   - Final bueno: grande abajo a la derecha, cortada por el borde; la pantalla entra con un fundido desde negro.
   - Para agregar otro final: su PNG en la carpeta, una línea en `ARTE` (tools/finales.py) y `image: '<id>'`.
+  - Ascensor, réplica y rescatado no tenían ilustración: van con arte del propio juego (captura de la escena del
+    ascensor y del piso derrumbado; Carlos con el bombero). Si el equipo dibuja las suyas, se reemplazan en la carpeta.
 
 ### Identidad UNGRD (Manual de Identidad Visual 2024)
 
 - **Logo:** `assets/ungrd/ungrd_h_blanco.webp` (versión a una tinta en negativo, blanco sobre negro, del manual) en el
-  menú, la carga y el cierre. También están las versiones a color (`ungrd_h.webp`, `ungrd_v.webp`) para fondos blancos.
+  menú, la carga y el cierre. (Las versiones a color están en el manual de identidad, por si se necesitan sobre blanco.)
 - **Colores:** `--ungrd-yellow` #ffcd00, `--ungrd-navy` #213362 y la franja tricolor (`--flag-*`) en `css/theme.css`.
   Se usan en acentos: barra de carga, "¡ATENTO!", números y franja de la pantalla de cierre.
 - **Tipografía:** Nunito Sans (la principal del manual) para textos e interfaz, en `assets/fonts/`. Los títulos grandes

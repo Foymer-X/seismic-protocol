@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="icon" href="data:," />
+    <title>Seismic Protocol · Realidad aumentada</title>
+    <style>
+      @font-face { font-family: 'Nunito Sans'; src: url('assets/fonts/NunitoSans-700.woff2') format('woff2'); font-weight: 700; }
+      @font-face { font-family: 'Nunito Sans'; src: url('assets/fonts/NunitoSans-900.woff2') format('woff2'); font-weight: 900; }
+      @font-face { font-family: 'Anton'; src: url('assets/fonts/Anton-Regular.ttf'); }
+      html, body { margin: 0; height: 100%; background: #000; color: #fff; font-family: 'Nunito Sans', Arial, sans-serif; overflow: hidden; }
+      #scene-container { position: fixed; inset: 0; }
+      .stripe { position: fixed; left: 0; right: 0; top: 0; height: 6px; z-index: 12;
+        background: linear-gradient(90deg, #ffc800 0 50%, #223a7a 50% 75%, #d80e25 75%); }
+
+      /* ---------- pantalla de inicio (antes de entrar) ---------- */
+      #start {
+        position: fixed; inset: 0; z-index: 10; background: #000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px;
+        padding: 40px 24px; box-sizing: border-box; text-align: center;
+      }
+      #start[hidden], #btn-sim[hidden] { display: none; }
+      #start .logo { width: min(560px, 78vw); height: auto; }
+      #start .ungrd { height: 44px; opacity: .9; }
+      #start .context { max-width: 640px; font-size: clamp(17px, 2.2vw, 22px); line-height: 1.45; margin: 0; text-wrap: balance; }
+      #start .context b { color: #ffcd00; }
+      #bar { width: min(320px, 70vw); height: 8px; border: 2px solid #fff; border-radius: 6px; overflow: hidden; }
+      #bar i { display: block; height: 100%; width: 0; background: #ffcd00; transition: width .2s; }
+      #btn-ar {
+        font: 900 22px 'Nunito Sans', Arial, sans-serif; padding: 18px 40px; border-radius: 16px; border: 3px solid #fff;
+        background: #ffcd00; color: #000; cursor: pointer; min-width: 300px;
+      }
+      #btn-ar:disabled { background: #444; color: #bbb; border-color: #666; cursor: default; }
+      #note { font-size: 14px; opacity: .75; margin: 0; max-width: 560px; text-wrap: balance; }
+      #btn-sim {
+        position: fixed; top: 22px; left: 22px; z-index: 11;
+        font: 700 15px 'Nunito Sans', Arial, sans-serif; padding: 10px 16px; border-radius: 10px;
+        border: 2px solid #fff; background: rgba(0,0,0,.6); color: #fff; cursor: pointer;
+      }
+      #btn-sim:disabled { opacity: .4; cursor: default; }
+      #btn-sim:not(:disabled):hover { background: #222; }
+      /* en la simulación, el botón lleva de vuelta a la pantalla de inicio */
+      body.sim #btn-sim { top: 18px; }
+      #fatal { position: fixed; inset: 20px; white-space: pre-wrap; background: #300; padding: 20px; z-index: 99; font: 14px monospace; }
+    </style>
+    <script type="module" crossorigin src="./assets/index.js"></script>
+  </head>
+  <body>
+    <div class="stripe"></div>
+    <div id="scene-container"></div>
+    <button id="btn-sim" disabled>Simulación sin AR</button>
+    <div id="start">
+      <canvas class="logo" id="logo" width="1800" height="635" aria-label="Seismic Protocol"></canvas>
+      <p class="context">
+        Esta es una experiencia de <b>realidad aumentada</b>.<br />
+        Ponte el visor, siéntate frente a una mesa y presiona el botón para empezar.
+      </p>
+      <div id="bar"><i></i></div>
+      <button id="btn-ar" disabled>Cargando…</button>
+      <p id="note">Funciona con las manos (o los controles) en el Meta Quest 3.</p>
+      <img class="ungrd" src="assets/ungrd/ungrd_h_blanco.webp" alt="UNGRD" />
+    </div>
+    <div id="fx-layers" hidden></div>
+  </body>
+</html>
